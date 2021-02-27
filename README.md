@@ -1,28 +1,29 @@
-# Project Deploy Shopping Cart
+# Project Shopping Cart
 
 A Student that completes this project shows they can:
 
-* Switch between H2 and PostgreSQL databases
-* Deploy to a cloud service
+* understand the flow and implementation of Spring Security and OAuth2 to provide authentication for a project
+* read user information from the access token
+* understand the issues related to CORS and implement solutions to those issues
+* understand how to implement a new user and logout endpoints
+* use Postman to manually test Web APIs using Authentication
 
 ## Introduction
 
-For this project, we are starting with your ending project from [Shopping Cart](https://github.com/LambdaSchool/java-shoppingcart.git). We are going to deploy this project to Heroku.
-
- A shopping cart is a common application so let's look at one. This Java Spring REST API application will provide endpoints for clients to perform the various CRUD operations on data sets contained in the application's data. Access to these endpoints will be secured using OAuth2 Authentication.
+A shopping cart is a very common application so let's look at one. This Java Spring REST API application will provide endpoints for clients to perform the various CRUD operations on data sets contained in the application's data. Access to these endpoints will be secured using OAuth2 Authentication.
 
 ### Database layout
 
-The table layout from your Shopping Cart Project should be
+You are creating a Java Spring REST API server which stores data in an H2 database. The final table layout should be
 
 ![Shopping Cart Database Layout](shoppingcartdb.png)
 
 All tables contain the following auditing fields
 
-* createdby - user name who created the row. Should default to SYSTEM
-* createddate - date field when the row was created
-* lastmodifiedby - user name who last changed data in the row. Should default to SYSTEM
-* lastmodifieddate - date field when the data in the row was last changed
+* **createdby** - user name who created the row. Should default to SYSTEM
+* **createddate** - date field when the row was created
+* **lastmodifiedby** - user name who last changed data in the row. Should default to SYSTEM
+* **lastmodifieddate** - date field when the data in the row was last changed
 
 Table Relationships include
 
@@ -31,36 +32,50 @@ Table Relationships include
 * A shopping cart is the collection of relationships between a user and product and is modeled using the join table CartItems which contains the quantity of the product being ordered.
 * Users have a Many to Many relationship with Roles. A user can have many roles while many users can have the same role.
 
-To find out the endpoints available to you in the initial application, you will need to use the Swagger document. Remember the Swagger documentation can be access at [http://localhost:2019/swagger-ui.html](http://localhost:2019/swagger-ui.html) once the application is running.
+You are to start with the initial application provided. To find out the endpoints available to you in the initial application, you will need to use the Swagger document. Remember the Swagger documentation can be access at [http://localhost:2019/swagger-ui.html](http://localhost:2019/swagger-ui.html) once the application is running.
 
 ## Instructions
 
 * [ ] Please fork and clone this repository.
-* [ ] This repository does not have a starter project, so you must start with the Shopping Cart Application from your submission for the module project [https://github.com/LambdaSchool/java-shoppingcart.git](https://github.com/LambdaSchool/java-shoppingcart.git). Regularly commit and push your code as appropriate.
-* [ ] For the seed files provided in the original project, that all of the users' passwords are "LambdaLlama".
+* [ ] This repository does have a starter project, so you must start with that application inside of the cloned repository folder. Regularly commit and push your code as appropriate.
+* [ ] A data.sql file has been provided with seed data. You can use this class directly or modify it to fit your models. However, the data found in the file is the seed data to use!
+* [ ] Note that all of the users' passwords are **LambdaLlama**.
+* [ ] ***Note that For the final project, passwords in the data.sql file will need to be converted to BCrypt! To convert Bcrypt, you can use the website [https://bcrypt-generator.com/](https://bcrypt-generator.com/). Once you have the BCrypt string, you will replace LambdaLlama with that BCrypt string.***
 
 ### MVP
 
-* [ ] Configure the application so that you can switch between the H2 database and the PostgreSQL database via a property in the application.properties files.
-* [ ] Required Testing.
-  * [ ] Write at least 2 unit tests for the Cart Items service (without database use).
-  * [ ] Write at least 2 unit tests for the Cart Items controller (without database use).
-  * [ ] Write at least 2 integration tests for the Cart Items controller (with database use).
-* [ ] Deploy the system to Heroku.
-  * [ ] Make sure that your data remains stable after Heroku automatically restarts your application each night (turn off seed data once the seed data is loaded).
-  
-### Stretch Goal
+* [ ] Add OAuth2 Security to the application
+  * [ ] Add the necessary dependencies
+  * [ ] Update User model as appropriate
+  * [ ] Add findByName to the User Service with associated repository entry
+  * [ ] Add the necessary helper functions
+  * [ ] Add the SecurityUserService service
+  * [ ] Add and update the necessary configuration files
+* [ ] The initial endpoints are affected by security as follows
+  * [ ] Only admins can access routes /roles/**
+  * [ ] Only admins can access routes /products/**
+  * [ ] Only admins can access routes
+    * [ ] POST /users/user
+    * [ ] DELETE /users/user/{id}
+    * [ ] PUT /users/user/{id}
+    * [ ] GET /users/user/name/{userName}
+    * [ ] GET /users/user/name/like/{userName}
+    * [ ] GET /users/user
+    * [ ] PATCH /users/user/{id}
+    * [ ] GET /users/user/{userId}
+  * [ ] For the routes /carts/**
+    * [ ] All authenticated users can access /carts/***
+    * [ ] Remove the user/{userid} path variable from all the routes
+    * [ ] Use the authenticated as the user to work with
 
-* [ ] Create a file under main/resources called info.txt
-  * [ ] In this file put the CURL commands needed for the following endpoints.
-  * [ ] Include after each CURL command, its results.
-  * [ ] The CURL commands should be run against your deployment on Heroku.
-  * [ ] Routes for CURL command
-    * [ ] GET /users/myinfo
-    * [ ] GET /carts/user
-    * [ ] POST /carts/create/product/1
-    * [ ] PUT /carts/update/cart/1/product/1
-    * [ ] DELETE /carts/delete/cart/1/product/1
-* [ ] Extend the unit tests for Cart Items service to 100% coverage
-* [ ] Extend the unit tests for Cart Items controller to 100% coverage
-* [ ] Extend the integration tests for the Cart Items controller to 100% coverage
+### Stretch Goals
+
+* [ ] Add new endpoints
+  * [ ] http://localhost:2019/users/myinfo
+    * [ ] Any authenticated user can access this endpoint and it will return the authenticated users information
+  * [ ] http://localhost:2019/logout
+    * [ ] Allows a user to logout of the system by removing their access token from the token store
+* [ ] Address CORS
+* [ ] For the following routes, admins can access them and a user can access only their own data
+  * [ ] PATCH /users/user/{id}
+  * [ ] GET /users/user/{userId}
